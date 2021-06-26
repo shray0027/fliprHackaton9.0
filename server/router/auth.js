@@ -1,4 +1,6 @@
+const jwt = require("jsonwebtoken");
 const express = require("express");
+const bcrypt = require("bcryptjs");
 const router = express.Router();
 
 require("../DB/connection");
@@ -9,20 +11,59 @@ router.get('/',(req,res)=>{
     res.send("hello");
 });
 
-router.post('/register' , (req,res) =>{
-   const { email , password,history } = req.body;
+router.post('/register' , async (req,res) =>{
+   const { email , password , cpassword} = req.body;
     //res.send("yes it is registering");
-    User.findOne({email : email}).then((userExist) =>{
+    try{
+        if(!email || !password || !cpassword){
+            res.status(400).json({error : "please fill the data"});
+        }
+
+        const userExist = await User.findOne({email : email});
+        
         if(userExist){
             return res.status(422).json({error : "user already exist"});
-        }
-        const user = new User ({email,password,history});
-        user.save().then(()=>{
+        }  else if (password!==cpassword){
+            return res.status(422).json({error : "password  does not match"});
+        } else {
+            const user = new User ({email,password,cpassword});
+            await user.save();
             res.status(201).json({message : "successfully saved"});
-        }).cath((err) => res.status(500).json({error : "failed to register"}));
-    }).catch(err => { 
+        }
+
+    }catch(err){
         console.log(err);
-    })
+    }
+})
+
+router.post('/signin',async (req,res)=>{
+        try{
+            let token;
+            const {email , password} =req.body;
+            if(!email || !password){
+                res.status(400).json({error : "please fill the data"});
+            }
+            const userLogin = await User.findOne({email:email});
+
+            if(userLogin){
+                const isMatch = await bcrypt.compare(password,userLogin.password);
+                token = await userLogin.generateAuthToken();
+                res.cookie("jwtoken",token,{
+                    expires:new Date(Date.now()+25892000000),
+                    httpOnly:true
+                })
+                if(!isMatch){
+                    res.status(400).json({error : "check username or password"});
+                } else {
+                    res.json({message : "user sign in successful"});
+                }
+            } else {
+                res.status(400).json({error : "check username or password"});
+            }
+    
+        } catch(err) {
+            console.log(err);
+        }
 })
 
 module.exports = router;
