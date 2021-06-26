@@ -9,9 +9,12 @@ require("./DB/connection");
 
 app.use(express.json());
 app.use(require('./router/auth'));
+app.use(require('./router/create'));
+app.use(require('./router/running'));
+app.use(require('./router/history'));
 
 
-let port = process.env.PORT || 3000
+let port = process.env.PORT || 3000;
 app.listen(port,()=>{
     console.log(`server launched on port ${port}`);
 });

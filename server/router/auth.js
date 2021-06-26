@@ -7,9 +7,6 @@ require("../DB/connection");
 
 const User = require("../model/userSchema");
 
-router.get('/',(req,res)=>{
-    res.send("hello");
-});
 
 router.post('/register' , async (req,res) =>{
    const { email , password , cpassword} = req.body;

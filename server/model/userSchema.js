@@ -14,6 +14,10 @@ const historySchema = new mongoose.Schema({
         type : String,
         required : false,
     } ,
+    schedule : {
+        type : String,
+        required : false ,
+    } ,
     message : {
         type : String,
         required : false,
