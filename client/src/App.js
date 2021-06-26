@@ -7,6 +7,7 @@ import History from './components/history';
 import Running from './components/running';
 import Register from './components/register';
 import Login from './components/login';
+import Footer from './components/footer';
 
 
 const App = ()=>{
@@ -28,6 +29,7 @@ const App = ()=>{
       <Route path="/history">
           <History />
       </Route>
+      <Footer />
     </>
   )
 }
