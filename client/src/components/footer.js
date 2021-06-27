@@ -20,10 +20,10 @@ const Footer = ()=>{
 
     <div>
       <NavLink  to="" className="me-4 text-reset">
-      <i class="far fa-envelope"></i>
+      <i className="far fa-envelope"></i>
       </NavLink >
       <NavLink  to="" className="me-4 text-reset">
-        <i class="fab fa-linkedin"></i>
+        <i className="fab fa-linkedin"></i>
       </NavLink >
       <NavLink  to="" className="me-4 text-reset">
         <i className="fab fa-github"></i>

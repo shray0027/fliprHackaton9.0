@@ -99,7 +99,7 @@ router.post("/create",authenticate ,async (req,res)=>{
       
         let today = new Date();
         let dateToday = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
-        let timeToday = today.getHours() + ":" + today.getMinutes();
+        let timeToday = today.getHours() + ":" + today.getMinutes()+":"+today.getSeconds();
         let timeStamp=timeToday+" "+dateToday;
         const runningObject = {to , subject ,message , schedule ,day , date , month , time ,times};
         const historyObject = {to, subject, message , timeStamp : timeStamp}
@@ -111,54 +111,84 @@ router.post("/create",authenticate ,async (req,res)=>{
             user.updateRunning(runningObject);
             user.update();
         }
-        const rule = new schedule.RecurrenceRule();
+        const rule = new scheduler.RecurrenceRule();
+        let mul;
         if(schedule==="1"){
-            const mul = times;
-            rule.minute=1;
+            mul = 30;
+            rule.second=30;
         }
-         schedule.scheduleJob(rule, function(){
+        if(schedule==="2"){
+            rule = {
+                dayOfWeek:parseInt(day)-1,hour:parseInt(time)
+            }
+            mul = 5;
+        }
+        if(schedule==="3"){
+            rule={
+                date:parseInt(date),hour:parseInt(time)
+            }
+            mul=12;
+        }
+        if(schedule==="4"){
+            rule={
+                date:parseInt(date),hour:parseInt(time)
+            }
+            mul=1;
+        }
+        
+        
+        
+        
+        
+        let count=0;
+        
+        const job= scheduler.scheduleJob(rule, async function(){
             console.log('Today is recognized by Rebecca Black!');
-            // user.updateHistory(historyObject);
-            // user.update();
+
+              if(count===times) {
+                  job.cancel();
+              }
+            const accessToken = await oAuth2Client.getAccessToken();
+            const output = `                 
+                        <p>${message}</p>
+                        <br>
+                        <p>This was send by Postmail web app made by ShrayAnand for flipr hackathon 9.0</p>
+                        `
+              let transporter = nodemailer.createTransport({
+                        service:'gmail',
+                        host: "gmail",
+                        port: 587,
+                        secure: false, 
+                        auth: {
+                            type :'OAuth2',
+                            clientId:process.env.CLIENT_ID,
+                            clientSecret:process.env.CLIENT_SECRET,
+                            refreshToken:process.env.REFRESH_TOKEN,
+                            accessToken:accessToken,
+                            user: "shrayanand000@gmail.com"
+                        },
+                        tls:{
+                            rejectUnauthorized:false
+                        }
+                        });
+        
+              let info = await transporter.sendMail({
+                        from: '"post mailer" <foo@example.com>',
+                        to: to, 
+                        subject: subject, 
+                        text: message, 
+                        html: output,
+                        });
+                        count=count+mul;
+      
+            user.updateHistory(historyObject);
+            user.update();
         });
-          
         
         
         
         
         
-        
-        const accessToken = await oAuth2Client.getAccessToken();
-        const output = `                 
-                       <p>${message}</p>
-                       <br>
-                       <p>This was send by Postmail web app made by ShrayAnand for flipr hackathon 9.0</p>
-                     `
-       let transporter = nodemailer.createTransport({
-                       service:'gmail',
-                       host: "gmail",
-                       port: 587,
-                       secure: false, 
-                       auth: {
-                           type :'OAuth2',
-                           clientId:process.env.CLIENT_ID,
-                           clientSecret:process.env.CLIENT_SECRET,
-                           refreshToken:process.env.REFRESH_TOKEN,
-                           accessToken:accessToken,
-                         user: "shrayanand000@gmail.com"
-                       },
-                       tls:{
-                           rejectUnauthorized:false
-                       }
-                     });
-    
-        let info = await transporter.sendMail({
-                       from: '"post mailer" <foo@example.com>',
-                       to: to, 
-                       subject: subject, 
-                       text: message, 
-                       html: output,
-                     });
       
     } catch (err) {
         res.status(500).json({error:"some error occured !!"});
@@ -166,9 +196,10 @@ router.post("/create",authenticate ,async (req,res)=>{
     }
 })
 
-router.get("/sendMail",authenticate,async (req,res)=>{
+router.get("/logout",async (req,res)=>{
     const data = req.rootUser;
-
+res.clearCookie('jwtoken',{path:'/'});
+res.status(200).send('userLOGOUT');
   
 
  

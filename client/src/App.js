@@ -8,7 +8,7 @@ import Running from './components/running';
 import Register from './components/register';
 import Login from './components/login';
 import Footer from './components/footer';
-
+import Logout from './components/logout';
 
 const App = ()=>{
   return (
@@ -28,6 +28,9 @@ const App = ()=>{
       </Route>
       <Route path="/history">
           <History />
+      </Route>
+      <Route path="/logout">
+          <Logout />
       </Route>
       <Footer />
     </>
