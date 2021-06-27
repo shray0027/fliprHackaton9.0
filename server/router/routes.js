@@ -5,6 +5,10 @@ const router = express.Router();
 const authenticate = require("../middleware/authenticate");
 const cookieParser =require('cookie-parser');
 const nodemailer = require("nodemailer");
+const {google}=require("googleapis");
+
+const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID,process.env.CLIENT_SECRET,process.env.REDIRECT_URI);
+oAuth2Client.setCredentials({refresh_token : process.env.REFRESH_TOKEN});
 
 const app = express();
 app.use(express.json());
@@ -70,15 +74,15 @@ router.post('/signin',async (req,res)=>{
 })
 
 router.get("/create",authenticate,(req,res)=>{
-  //  console.log(req.rootUser);
+    console.log(req.rootUser);
     res.send(req.rootUser);
 });
 router.get("/history",authenticate,(req,res)=>{
-    console.log(req.rootUser);
+    //console.log(req.rootUser);
     res.send(req.rootUser);
 });
 router.get("/running",authenticate,(req,res)=>{
-    console.log(req.rootUser);
+   // console.log(req.rootUser);
     res.send(req.rootUser);
 });
 router.post("/create",authenticate ,async (req,res)=>{
@@ -88,39 +92,55 @@ router.post("/create",authenticate ,async (req,res)=>{
         if(!to || !subject || !message || !schedule){
             res.status(400).json({error : "please fill the data"});
         }
-       const output = ` <h1>flipr hackathon 9.0</h1>
-                        <br>                
-                        <p>Flipr is organising ts hackathon 9.0 be sure to partcipate , you can win various prizes and have chance to get placed or get internship</p>
+        const data = req.rootUser;
+        const user = await  User.findOne({_id:data._id});
+      
+        let today = new Date();
+        let dateToday = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+        let timeToday = today.getHours() + ":" + today.getMinutes();
+        let timeStamp=timeToday+" "+dateToday;
+        const runningObject = {to , subject ,message , schedule ,day , date , month , time };
+        const historyObject = {to, subject, message , timeStamp : timeStamp}
+  
+        const accessToken = await oAuth2Client.getAccessToken();
+         const output = `                 
+                        <p>${message}</p>
                         <br>
-                        <p>You can visit our website to take part in <a href="flipr.ai">flipr.ai</a></p>
-                        <p>This email was sent you by Post mail bot</p>
+                        <p>This was send by Postmail web app made by ShrayAnand for flipr hackathon 9.0</p>
                       `
-
-                      let transporter = nodemailer.createTransport({
+        let transporter = nodemailer.createTransport({
+                        service:'gmail',
                         host: "gmail",
                         port: 587,
                         secure: false, 
                         auth: {
-                          user: "shrayanand000@gmail.com", 
-                          pass: "$Sharyblare2826", 
+                            type :'OAuth2',
+                            clientId:process.env.CLIENT_ID,
+                            clientSecret:process.env.CLIENT_SECRET,
+                            refreshToken:process.env.REFRESH_TOKEN,
+                            accessToken:accessToken,
+                          user: "shrayanand000@gmail.com"
                         },
                         tls:{
                             rejectUnauthorized:false
                         }
                       });
     
-                      let info = await transporter.sendMail({
-                        from: '"post mailer" <foo@example.com>', // sender address
-                        to: to, // list of receivers
-                        subject: subject, // Subject line
-                        text: message, // plain text body
-                        html: output, // html body
+         let info = await transporter.sendMail({
+                        from: '"post mailer" <foo@example.com>',
+                        to: to, 
+                        subject: subject, 
+                        text: message, 
+                        html: output,
                       });
-                    
-                      console.log("Message sent: %s", info.messageId);
-                      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-
+        
+                      if(user){
+                        user.updateRunning(runningObject);
+                        user.updateHistory(historyObject);
+                        user.update();
+                    }
     } catch (err) {
+        res.status(500).json({error:"some error occured !!"});
         console.log(err);
     }
 })

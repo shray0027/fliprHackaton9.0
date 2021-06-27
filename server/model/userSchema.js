@@ -1,60 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const historySchema = new mongoose.Schema({
-    to : {
-        type : String,
-        required : false,
-     }// ,
-    // day:{
-    //     type : Number,
-    // }
-    // day:{
-    //     type : Number,
-    // }
-    // day:{
-    //     type : Number,
-    // }
-    // day:{
-    //     type : Number,
-    // }
-    ,
-    subject : {
-        type : String,
-        required : false,
-    } ,
-    schedule : {
-        type : String,
-        required : false ,
-    } ,
-    message : {
-        type : String,
-        required : false,
-    } 
-})
 
-const requestSchema = new mongoose.Schema({
-    to : {
-        type : String,
-        required : false ,
-    } ,
-    schedule : {
-        type : String,
-        required : false ,
-    } ,
-    timestamp : {
-        type : Date,
-        required : false ,
-    } ,
-    subject : {
-        type : String,
-        required : false ,
-    } ,
-    message : {
-        type : String,
-        required : false ,
-    } 
-})
+
 
 
 
@@ -75,14 +23,59 @@ const userSchema = new mongoose.Schema({
         type : String,
         required : false
      },
-     currentRequest : {
-         type : [requestSchema],
-         required:false
-     },
-     history : { 
-         type : [historySchema],
-         required : false
-     },
+     currentRequest : [
+        {
+            to : {
+                type : String,
+                required : false,
+            } ,
+            day:{
+                type : Number,
+            },
+            date:{
+                type : Number,
+            },
+            month:{
+                type : Number,
+            },
+           time:{
+                type : Number,
+            }
+            ,
+            subject : {
+                type : String,
+                required : false,
+            } ,
+            schedule : {
+                type : String,
+                required : false ,
+            } ,
+            message : {
+                type : String,
+                required : false,
+            } 
+        }
+     ],
+     history : [
+        {
+            to : {
+                type : String,
+                required : false,
+            } ,
+           timeStamp:{
+                type : String,
+            }
+            ,
+            subject : {
+                type : String,
+                required : false,
+            } ,
+            message : {
+                type : String,
+                required : false,
+            } 
+        }
+     ],
      tokens :[
          {
              token: {
@@ -109,6 +102,27 @@ userSchema.methods.generateAuthToken = async function(){
         this.tokens=this.tokens.concat({token:token});
         await this.save();
         return token;
+    }catch(err){
+        console.log(err);
+    }
+}
+userSchema.methods.updateRunning = async function(object){
+    try {
+        this.currentRequest=this.currentRequest.concat(object);
+    }catch(err){
+        console.log(err);
+    }
+}
+userSchema.methods.updateHistory = async function(object){
+    try {
+        this.history=this.history.concat(object);
+    }catch(err){
+        console.log(err);
+    }
+}
+userSchema.methods.update = async function(){
+    try {
+        await this.save();
     }catch(err){
         console.log(err);
     }
