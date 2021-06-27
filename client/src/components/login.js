@@ -1,44 +1,73 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom';
+import React , {useState} from 'react'
+import { NavLink,useHistory } from 'react-router-dom';
 
 const Login = ()=>{
+    const history = useHistory();
+    const [ email , setEmail] = useState('');
+    const [ password , setPassword] = useState('');
+    const loginUser = async (e) =>{
+        e.preventDefault();
+            const res = await fetch("/signin",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    email , 
+                    password 
+                })
+            });
+            const data = await res.json();
+            if(res.status===400 || !data){
+                window.alert("Invalid details")
+            } else {
+                window.alert("successfull login");
+                history.push("/create");
+            }
+    }
   return (
     <>
     <div className="upper">
-             <div class="login-form">
-    <form action="/login" method="post">
-        <h2 class="text-center">Log in</h2>   
-        <div class="form-group">
-        	<div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text form-control">
-                        <span class="fa fa-user"></span>
+             <div className="login-form">
+    <form  method="POST">
+        <h2 className="text-center">Log in</h2>   
+        <div className="form-group">
+        	<div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text form-control">
+                        <span className="fa fa-user"></span>
                     </span>                    
                 </div>
-                <input type="text" class="form-control" name="username" placeholder="Username" required="required"/>				
+                <input type="email" className="form-control" name="email" 
+                  value={email}
+                  onChange={(e)=>setEmail(e.target.value)}
+                 placeholder="email" required="required"/>				
             </div>
         </div>
-		<div class="form-group">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text form-control">
-                        <i class="fa fa-lock"></i>
+		<div className="form-group">
+            <div className="input-group">
+                <div className="input-group-prepend">
+                    <span className="input-group-text form-control">
+                        <i className="fa fa-lock"></i>
                     </span>                    
                 </div>
-                <input type="password" class="form-control" name="password" placeholder="Password" required="required"/>				
+                <input type="password" className="form-control" name="password" 
+                  value={password}
+                  onChange={(e)=>setPassword(e.target.value)}
+                 placeholder="Password" required="required"/>				
             </div>
         </div>        
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary login-btn btn-block">Log in</button>
+        <div className="form-group">
+            <button type="submit" onClick={loginUser} className="btn btn-primary login-btn btn-block">Log in</button>
         </div>
 
-		<div class="or-seperator"><i>or</i></div>
-        <p class="text-center">Login with google</p>
-        <div class="text-center social-btn">
-			  <NavLink to="/" class="btn btn-danger"><i class="fa fa-google"></i> Google</NavLink>
+		<div className="or-seperator"><i>or</i></div>
+        <p className="text-center">Login with google</p>
+        <div className="text-center social-btn">
+			  <NavLink to="/" className="btn btn-danger"><i className="fa fa-google"></i> Google</NavLink>
         </div>
     </form>
-    <p class="text-center text-muted small">Don't have an account? <NavLink to="/register">Sign up here!</NavLink></p>
+    <p className="text-center text-muted small">Don't have an account? <NavLink to="/signup">Sign up here!</NavLink></p>
     </div>
     </div>
    </>

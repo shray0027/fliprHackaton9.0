@@ -1,36 +1,120 @@
-import React from 'react'
+import React, {useState, useEffect } from 'react'
 import "bootstrap/dist/css/bootstrap.css"
+import { useHistory} from 'react-router-dom'
 
 const Create = ()=>{
+  const history = useHistory();
+  const [user , setUser]=useState({
+      to:"",subject:"",message:"",day:"",date:"",time:"",schedule:"",month:""
+  });
+  let name;  let value;
+  
+  const handleInputs =(e)=>{
+          name=e.target.name;
+          value=e.target.value;
+          setUser({...user,[name]:value});
+      }
+  const callCreatePage = async()=>{
+    try{
+        const res = await fetch("/create",{
+          method:"GET",
+          headers:{
+            Accept:"application/json",
+            "Content-Type":"application/json"
+          },
+          credentials:"include"
+        });
+        const data = await res.json();
+        console.log(data);
+        if(!res.status===200){
+          const error = new Error(res.error);
+          window.alert(error);
+          throw error;
+        }
+    }catch(err){
+        console.log(err);
+        history.push("/");
+    }
+  }
+  const createEmail = async (e) =>{
+    e.preventDefault();
+    const {to , 
+    subject,
+    message,
+    day,
+    date,
+    time,
+    schedule,
+    month } = user;
+        const res = await fetch("/create",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                to , 
+                subject,
+                message,
+                day,
+                date,
+                time,
+                schedule,
+                month
+            })
+        });
+        const data = await res.json();
+        if(res.status===400 || !data){
+            window.alert("Invalid details")
+        } else {
+            window.alert("successfull created");
+            history.push("/running");
+        }
+}
+  useEffect(()=>{
+    callCreatePage();
+  },[]);
   return (
       <>
           <div className="upper">
                 <div className="signup-form create-form">
                
-                  <form action="/create" method="POST">
+                  <form  method="POST">
                   <div className="row">
                   <h2>Create mail</h2>
                   </div>
                   <div className="row">
                               <div className="col-lg-6  col-md-12">
                                 
-                                  <div class="mb-3">
-                                        <label for="exampleFormControlInput1" class="form-label">To :</label>
-                                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" />
+                                  <div className="mb-3">
+                                        <label for="exampleFormControlInput1" className="form-label">To :</label>
+                                        <input type="email" required name="to"  className="form-control" id="exampleFormControlInput1" 
+                                          value={user.to}
+                                          onChange={handleInputs}
+                                        placeholder="name@example.com" />
                                   </div>
-                                  <div class="mb-3">
-                                        <label for="exampleFormControlTextarea2" class="form-label">Subject :</label>
-                                        <input type="text" class="form-control" id="exampleFormControlTextarea2" />
+                                  <div className="mb-3">
+                                        <label for="exampleFormControlTextarea2" className="form-label">Subject :</label>
+                                        <input type="text" required name="subject" className="form-control" 
+                                          value={user.subject}
+                                          onChange={handleInputs}
+                                        id="exampleFormControlTextarea2" />
                                   </div>
-                                  <div class="mb-3">
-                                              <label for="exampleFormControlTextarea1" class="form-label">Text :</label>
-                                              <textarea class="form-control textarea" id="exampleFormControlTextarea1" rows="3" col="3"></textarea>
+                                  <div className="mb-3">
+                                              <label for="exampleFormControlTextarea1" className="form-label">Text :</label>
+                                              <textarea required name="message" className="form-control textarea" id="exampleFormControlTextarea1"
+                                                value={user.message}
+                                                onChange={handleInputs}
+                                               rows="3" col="3"></textarea>
                                   </div>`
                                 </div>
                       <div className="col-lg-6 col-md-12">
                               <div className="row ">
-                              <label for="exampleFormControlTextarea1" class="form-label">Schedule :</label>
-                              <select className="form-select" aria-label="Default select example">
+                              <label for="exampleFormControlTextarea1" className="form-label">Schedule :</label>
+                              <select className="form-select" required
+                                value={user.schedule}
+                                onChange={handleInputs}
+                               name="schedule" aria-label="Default select example">
+                               <option value="00">Select the schedule</option>
                                 <option value="1">Mail after every 60 seconds</option>
                                 <option value="2">Mail at particular day every week</option>
                                 <option value="3">Mail at particular date every month</option>
@@ -38,8 +122,12 @@ const Create = ()=>{
                               </select>
                               </div>
                                     <div className="row my-4" >
-                                    <label for="exampleFormControlTextarea1" class="form-label">Day :</label>
-                                    <select name="month" className="form-select">
+                                    <label for="exampleFormControlTextarea1" className="form-label">Day :</label>
+                                    <select name="day"
+                                      value={user.day}
+                                      onChange={handleInputs}
+                                     className="form-select">
+                                        <option value="00">Select the day</option>
                                         <option value="01">Sunday</option>
                                         <option value="02">Monday</option>
                                         <option value="03">Tuesday</option>
@@ -50,8 +138,12 @@ const Create = ()=>{
                                     </select> 
                                     </div>
                                     <div className="row my-2">
-                                    <label for="exampleFormControlTextarea1" class="form-label">Date :</label>
-                                    <select name="date" className="form-select">
+                                    <label for="exampleFormControlTextarea1" className="form-label">Date :</label>
+                                    <select name="date"
+                                      value={user.date}
+                                      onChange={handleInputs}
+                                     className="form-select">
+                                          <option value="00">Select the date</option>
                                           <option value="01">1</option>
                                           <option value="02">2</option>
                                           <option value="03">3</option>
@@ -86,8 +178,9 @@ const Create = ()=>{
                                     </select>    
                                     </div>
                                     <div className="row my-2" >
-                                    <label for="exampleFormControlTextarea1" class="form-label">Month :</label>
-                                    <select name="month" className="form-select">
+                                    <label for="exampleFormControlTextarea1" className="form-label">Month :</label>
+                                    <select name="month" value={user.month} onChange={handleInputs} className="form-select">
+                                    <option value="00">Select the month</option>
                                         <option value="01">January</option>
                                         <option value="02">February</option>
                                         <option value="03">March</option>
@@ -103,8 +196,12 @@ const Create = ()=>{
                                     </select> 
                                     </div>
                                     <div className="row my-2">
-                                    <label for="exampleFormControlTextarea1" class="form-label">Time :</label>
-                                    <select name="time" className="form-select">
+                                    <label for="exampleFormControlTextarea1" className="form-label">Time :</label>
+                                    <select name="time"
+                                      value={user.time}
+                                      onChange={handleInputs}
+                                     className="form-select">
+                                          <option value="25">Select the time</option>
                                           <option value="0">00:00</option>
                                           <option value="01">01:00</option>
                                           <option value="02">02:00</option>
@@ -135,7 +232,7 @@ const Create = ()=>{
                               </div>
                       </div>
                     <div className="d-grid gap-2 col-6 mx-auto">
-                          <button type="submit" className="btn btn-primary ">Send</button>
+                          <button type="submit" onClick={createEmail} className="btn btn-primary ">Send</button>
                     </div>
                  
                   </form>

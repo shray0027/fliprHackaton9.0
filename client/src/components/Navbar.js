@@ -17,16 +17,22 @@ const Navbar = ()=>{
     </button>
     <div className ="collapse navbar-collapse" id="navbarSupportedContent">
       <ul className ="navbar-nav ms-auto">
+      <li className="nav-item">
+          <NavLink className ="nav-link" to="/">Login</NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className ="nav-link" to="/signup">Register</NavLink>
+        </li>
         <li className ="nav-item">
           <NavLink className ="nav-link" aria-current="page" to="/create">Create</NavLink>
         </li>
-        <li class="nav-item">
+        <li className="nav-item">
           <NavLink className ="nav-link" to="/running">Running</NavLink>
         </li>
-        <li class="nav-item">
+        <li className="nav-item">
           <NavLink className ="nav-link" to="/history">History</NavLink>
         </li>
-        <li class="nav-item">
+        <li className="nav-item">
           <NavLink className ="nav-link" to="/logout">Logout</NavLink>
         </li>
       </ul>

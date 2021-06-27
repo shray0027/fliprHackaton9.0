@@ -5,11 +5,20 @@ const historySchema = new mongoose.Schema({
     to : {
         type : String,
         required : false,
-    } ,
-    timestamp : {
-        type : Date,
-        required : false,
-    } ,
+     }// ,
+    // day:{
+    //     type : Number,
+    // }
+    // day:{
+    //     type : Number,
+    // }
+    // day:{
+    //     type : Number,
+    // }
+    // day:{
+    //     type : Number,
+    // }
+    ,
     subject : {
         type : String,
         required : false,
