@@ -74,18 +74,6 @@ router.post('/signin',async (req,res)=>{
         }
 })
 
-router.get("/create",authenticate,(req,res)=>{
-    //console.log(req.rootUser);
-    res.send(req.rootUser);
-});
-router.get("/history",authenticate,(req,res)=>{
-    //console.log(req.rootUser);
-    res.send(req.rootUser);
-});
-router.get("/running",authenticate,(req,res)=>{
-   // console.log(req.rootUser);
-    res.send(req.rootUser);
-});
 router.post("/create",authenticate ,async (req,res)=>{
     try {
         const {to , subject ,message , schedule ,day , date , month , time ,times} = req.body;
@@ -195,7 +183,27 @@ router.post("/create",authenticate ,async (req,res)=>{
         console.log(err);
     }
 })
+router.post("/running", authenticate,async(req,res)=>{
+    const data = req.rootUser;
 
+    const user = await  User.findOne({_id:data._id});
+    user.removeRunning();
+    user.update();
+    res.json({status:"removed"});
+})
+
+router.get("/create",authenticate,(req,res)=>{
+    //console.log(req.rootUser);
+    res.send(req.rootUser);
+});
+router.get("/history",authenticate,(req,res)=>{
+    //console.log(req.rootUser);
+    res.send(req.rootUser);
+});
+router.get("/running",authenticate,(req,res)=>{
+   // console.log(req.rootUser);
+    res.send(req.rootUser);
+});
 router.get("/logout",async (req,res)=>{
     const data = req.rootUser;
 res.clearCookie('jwtoken',{path:'/'});

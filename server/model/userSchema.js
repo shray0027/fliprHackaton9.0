@@ -131,6 +131,15 @@ userSchema.methods.update = async function(){
         console.log(err);
     }
 }
+userSchema.methods.removeRunning = async function(){
+    try {
+        console.log(this.currentRequest);
+        this.currentRequest=this.currentRequest.pop();
+        console.log(this.currentRequest);
+    }catch(err){
+        console.log(err);
+    }
+}
 const User=  mongoose.model('User',userSchema);
 
 module.exports = User;

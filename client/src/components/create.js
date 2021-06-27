@@ -2,7 +2,7 @@ import React, {useState, useEffect } from 'react'
 import "bootstrap/dist/css/bootstrap.css"
 import { useHistory} from 'react-router-dom'
 
-const Create = ()=>{
+const Create = ()=>{ 
   const history = useHistory();
   const [user , setUser]=useState({
       to:"",subject:"",message:"",day:"",date:"",time:"",schedule:"",month:"",times:""

@@ -183,27 +183,27 @@ select{
 }
 /* running  */
 .outer,.outerL{
-  height: 75vh;
+ min-height: 75vh;
   margin: auto;
 }
-tr:nth-child(1){
+.first{
 background-color: #39A2DB;
 }
-tr:nth-child(2){
+.second{
   background-color: #FBC7F7;
 }
-tr:nth-child(3){
+.third{
   background-color: #C490E4;
 
 }
 td{
   padding: 0 10px;
 }
-tr:nth-child(3) td{
+.third td{
   padding-top: 40px ;
   padding-bottom: 40px ;
 }
-tr:nth-child(4){
+.four{
   background-color: #A2DBFA;
 }
 .terminateForm{
@@ -243,6 +243,6 @@ color: white;
 
 @media (max-width : 1000px){
   .upper,.outer,.outerL{
-   height: 120vh;
+   min-height: 120vh;
   }
 }

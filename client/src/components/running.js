@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.css"
 
 const Running = ()=>{
   const history = useHistory();
-  const [userData , setUserData]=useState({});
+  const [mails, setMails] = useState([{}]);
 const getRunningData = async()=>{
   try{
       const res = await fetch("/running",{
@@ -15,8 +15,8 @@ const getRunningData = async()=>{
       });
       const data = await res.json();
 
-      setUserData(data);
-      console.log(data,userData);
+      setMails(data.currentRequest);
+      console.log(data.currentRequest);
       if(!res.status===200){
         const error = new Error(res.error);
         window.alert(error);
@@ -29,7 +29,19 @@ const getRunningData = async()=>{
 }
 const terminate = async(e)=>{
   e.preventDefault();
-  console.log("hello");
+  const res = await fetch("/running",{
+    method:"POST",
+    headers:{
+        "Content-Type":"application/json"
+    }
+    
+});
+
+if(!res.status===200){
+  const error = new Error(res.error);
+  window.alert(error);
+  throw error;
+}
 }
 
 
@@ -43,19 +55,19 @@ useEffect(()=>{
       <h2 className="w-75 my-4 mx-auto ">CURRENT RUNNING MAIL 📨 📪</h2>
        <table className="w-75 my-4 mx-auto">
        <tbody>
-       <tr className="w-100">
+       <tr className="w-100 first">
            <td className="p-5  fs-5 fw-bold">To</td>
-           <td>{userData.to}</td>
+           <td>{mails.to}</td>
            </tr>
-           <tr>
+           <tr className="w-100 second">
            <td className="p-5 fs-5 fw-bold">Subject:</td>
-           <td>{userData.subject}</td>
+           <td>{mails.subject}</td>
            </tr>
-           <tr>
+           <tr className="w-100 third">
              <td className="p-5  fs-5 fw-bold"> Text</td>
-             <td >{userData.message}</td>
+             <td >{mails.message}</td>
            </tr>
-           <tr>
+           <tr className="w-100 four">
              <td className="p-5  fs-5 fw-bold">Schedule:</td>
              <td>dhedh2bdeh2jbdh2</td>
            </tr>
@@ -63,7 +75,7 @@ useEffect(()=>{
 
        </table>
        <form method="POST" className="w-75 my-4 mx-auto terminateForm">
-          <button onClick={terminate} type="submit" className="redBtn">Terminate</button>
+          <button  type="submit" onClick={terminate} className="redBtn">Terminate</button>
        </form>
     </div>
     </>
