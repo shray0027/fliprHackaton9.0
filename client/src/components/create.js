@@ -5,7 +5,7 @@ import { useHistory} from 'react-router-dom'
 const Create = ()=>{
   const history = useHistory();
   const [user , setUser]=useState({
-      to:"",subject:"",message:"",day:"",date:"",time:"",schedule:"",month:""
+      to:"",subject:"",message:"",day:"",date:"",time:"",schedule:"",month:"",times:""
   });
   let name;  let value;
   
@@ -25,7 +25,10 @@ const Create = ()=>{
           credentials:"include"
         });
         const data = await res.json();
-        console.log(data);
+        if(data.currentRequest.length!==0){
+          window.alert("Already One job running first terminate it");
+          history.push("/running");
+        }
         if(!res.status===200){
           const error = new Error(res.error);
           window.alert(error);
@@ -45,7 +48,8 @@ const Create = ()=>{
     date,
     time,
     schedule,
-    month } = user;
+    month ,
+  times} = user;
         const res = await fetch("/create",{
             method:"POST",
             headers:{
@@ -59,7 +63,8 @@ const Create = ()=>{
                 date,
                 time,
                 schedule,
-                month
+                month,
+                times
             })
         });
         const data = await res.json();
@@ -115,14 +120,22 @@ const Create = ()=>{
                                 onChange={handleInputs}
                                name="schedule" aria-label="Default select example">
                                <option value="00">Select the schedule</option>
-                                <option value="1">Mail after every 60 seconds</option>
+                                <option value="1">Mail after every 30 seconds</option>
                                 <option value="2">Mail at particular day every week</option>
                                 <option value="3">Mail at particular date every month</option>
                                 <option value="4">Mail at particular date every year</option>
                               </select>
                               </div>
                                     <div className="row my-4" >
-                                    <label for="exampleFormControlTextarea1" className="form-label">Day :</label>
+                                    <div className="col-6">
+                                    <label for="exampleFormControlTextarea1" className="form-label">No. of time you want to send :</label>
+                                    <input type="number" required name="times" className="form-control" placeholder="Example : 1" required
+                                          value={user.times}
+                                          onChange={handleInputs}
+                                        id="exampleFormControlTextarea2" />
+                                    </div>
+                                   <div className="col-6">
+                                   <label for="exampleFormControlTextarea1" className="form-label">Day :</label>
                                     <select name="day"
                                       value={user.day}
                                       onChange={handleInputs}
@@ -136,6 +149,7 @@ const Create = ()=>{
                                         <option value="06">Friday</option>
                                         <option value="07">Saturday</option>
                                     </select> 
+                                   </div>
                                     </div>
                                     <div className="row my-2">
                                     <label for="exampleFormControlTextarea1" className="form-label">Date :</label>

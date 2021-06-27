@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
         type : String,
         required : false
      },
+
      currentRequest : [
         {
             to : {
@@ -37,6 +38,9 @@ const userSchema = new mongoose.Schema({
             },
             month:{
                 type : Number,
+            },
+            times:{
+                type :Number
             },
            time:{
                 type : Number,

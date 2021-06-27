@@ -6,6 +6,7 @@ const authenticate = require("../middleware/authenticate");
 const cookieParser =require('cookie-parser');
 const nodemailer = require("nodemailer");
 const {google}=require("googleapis");
+const scheduler=require("node-schedule");
 
 const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID,process.env.CLIENT_SECRET,process.env.REDIRECT_URI);
 oAuth2Client.setCredentials({refresh_token : process.env.REFRESH_TOKEN});
@@ -74,7 +75,7 @@ router.post('/signin',async (req,res)=>{
 })
 
 router.get("/create",authenticate,(req,res)=>{
-    console.log(req.rootUser);
+    //console.log(req.rootUser);
     res.send(req.rootUser);
 });
 router.get("/history",authenticate,(req,res)=>{
@@ -87,62 +88,90 @@ router.get("/running",authenticate,(req,res)=>{
 });
 router.post("/create",authenticate ,async (req,res)=>{
     try {
-        const {to , subject ,message , schedule ,day , date , month , time } = req.body;
+        const {to , subject ,message , schedule ,day , date , month , time ,times} = req.body;
 
-        if(!to || !subject || !message || !schedule){
+        if(!to || !subject || !message || !schedule || !times){
             res.status(400).json({error : "please fill the data"});
         }
         const data = req.rootUser;
+
         const user = await  User.findOne({_id:data._id});
       
         let today = new Date();
         let dateToday = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
         let timeToday = today.getHours() + ":" + today.getMinutes();
         let timeStamp=timeToday+" "+dateToday;
-        const runningObject = {to , subject ,message , schedule ,day , date , month , time };
+        const runningObject = {to , subject ,message , schedule ,day , date , month , time ,times};
         const historyObject = {to, subject, message , timeStamp : timeStamp}
-  
-        const accessToken = await oAuth2Client.getAccessToken();
-         const output = `                 
-                        <p>${message}</p>
-                        <br>
-                        <p>This was send by Postmail web app made by ShrayAnand for flipr hackathon 9.0</p>
-                      `
-        let transporter = nodemailer.createTransport({
-                        service:'gmail',
-                        host: "gmail",
-                        port: 587,
-                        secure: false, 
-                        auth: {
-                            type :'OAuth2',
-                            clientId:process.env.CLIENT_ID,
-                            clientSecret:process.env.CLIENT_SECRET,
-                            refreshToken:process.env.REFRESH_TOKEN,
-                            accessToken:accessToken,
-                          user: "shrayanand000@gmail.com"
-                        },
-                        tls:{
-                            rejectUnauthorized:false
-                        }
-                      });
-    
-         let info = await transporter.sendMail({
-                        from: '"post mailer" <foo@example.com>',
-                        to: to, 
-                        subject: subject, 
-                        text: message, 
-                        html: output,
-                      });
+        console.log(data.currentRequest);
+        if(data.currentRequest.length!==0){
+            res.json({error:"Already One job running first terminate it"});
+            return;
+        }else {
+            user.updateRunning(runningObject);
+            user.update();
+        }
+        const rule = new schedule.RecurrenceRule();
+        if(schedule==="1"){
+            const mul = times;
+            rule.minute=1;
+        }
+         schedule.scheduleJob(rule, function(){
+            console.log('Today is recognized by Rebecca Black!');
+            // user.updateHistory(historyObject);
+            // user.update();
+        });
+          
         
-                      if(user){
-                        user.updateRunning(runningObject);
-                        user.updateHistory(historyObject);
-                        user.update();
-                    }
+        
+        
+        
+        
+        
+        const accessToken = await oAuth2Client.getAccessToken();
+        const output = `                 
+                       <p>${message}</p>
+                       <br>
+                       <p>This was send by Postmail web app made by ShrayAnand for flipr hackathon 9.0</p>
+                     `
+       let transporter = nodemailer.createTransport({
+                       service:'gmail',
+                       host: "gmail",
+                       port: 587,
+                       secure: false, 
+                       auth: {
+                           type :'OAuth2',
+                           clientId:process.env.CLIENT_ID,
+                           clientSecret:process.env.CLIENT_SECRET,
+                           refreshToken:process.env.REFRESH_TOKEN,
+                           accessToken:accessToken,
+                         user: "shrayanand000@gmail.com"
+                       },
+                       tls:{
+                           rejectUnauthorized:false
+                       }
+                     });
+    
+        let info = await transporter.sendMail({
+                       from: '"post mailer" <foo@example.com>',
+                       to: to, 
+                       subject: subject, 
+                       text: message, 
+                       html: output,
+                     });
+      
     } catch (err) {
         res.status(500).json({error:"some error occured !!"});
         console.log(err);
     }
+})
+
+router.get("/sendMail",authenticate,async (req,res)=>{
+    const data = req.rootUser;
+
+  
+
+ 
 })
 
 module.exports = router;

@@ -61,11 +61,11 @@ const Login = ()=>{
             <button type="submit" onClick={loginUser} className="btn btn-primary login-btn btn-block">Log in</button>
         </div>
 
-		<div className="or-seperator"><i>or</i></div>
+		{/* <div className="or-seperator"><i>or</i></div>
         <p className="text-center">Login with google</p>
         <div className="text-center social-btn">
 			  <NavLink to="/" className="btn btn-danger"><i className="fa fa-google"></i> Google</NavLink>
-        </div>
+        </div> */}
     </form>
     <p className="text-center text-muted small">Don't have an account? <NavLink to="/signup">Sign up here!</NavLink></p>
     </div>
