@@ -21,10 +21,10 @@ const History = () => {
   return (
     <div className='outer m-5 w-80'>
       <h2 className="w-75 my-4 mx-auto ">History</h2>
-      <table className="w-75 my-4 mx-auto">
+      <table className="w-75 my-4 mx-auto table-striped">
         <tbody>
-        <tr>
-        <td>#</td>
+        <tr className="fw-bold">
+        <td >#</td>
         <td>To</td>
         <td colSpan="3">Subject</td>
         <td>Timestamp</td>

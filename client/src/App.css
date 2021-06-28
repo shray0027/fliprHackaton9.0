@@ -1,11 +1,16 @@
 .navbar-logo{
   width: 50px;
 }
+#root{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
 .navbar-brand{
   display: flex;
 }
 .upper{
-  height: 75vh;
+  flex-grow: 1;
   width: 100%;
   display: flex;
 }
@@ -20,6 +25,7 @@ body {
 color: #fff;
 background: #63738a;
 font-family: 'Roboto', sans-serif;
+
 }
 .form-control {
 height: 40px;
@@ -142,6 +148,9 @@ text-decoration: underline;
   font-weight: bold;
   min-height: 40px;
 }
+.upper,.outer,.outerL{
+  min-height:80vh ;
+}
 .social-btn .btn {
   border: none;
   margin: 10px 3px 0;
@@ -183,7 +192,7 @@ select{
 }
 /* running  */
 .outer,.outerL{
- min-height: 75vh;
+ flex-grow: 1;
   margin: auto;
 }
 .first{
@@ -220,6 +229,7 @@ td{
 }
 .outerL{
   width: 100%;
+  flex-grow: 1;
 }
 .imgDiv,.linkDiv{
   display: flex;

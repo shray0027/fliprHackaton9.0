@@ -133,7 +133,7 @@ router.post("/create",authenticate ,async (req,res)=>{
         const job= scheduler.scheduleJob(rule, async function(){
             console.log('Today is recognized by Rebecca Black!');
 
-              if(count>=times) {
+              if(count>=times ||  user.getLength()===0) {
                 user.removeRunning();
                 user.update();
                   job.cancel();
@@ -209,7 +209,7 @@ router.get("/history",authenticate,(req,res)=>{
     res.send(req.rootUser);
 });
 router.get("/running",authenticate,(req,res)=>{
-   // console.log(req.rootUser);
+   console.log('Running Root User ===>>>>', req.rootUser);
     res.send(req.rootUser);
 });
 router.get("/logout",async (req,res)=>{

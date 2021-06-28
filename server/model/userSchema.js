@@ -140,6 +140,9 @@ userSchema.methods.removeRunning = async function(){
         console.log(err);
     }
 }
+userSchema.methods.getLength= async function(){
+    return this.currentRequest.length;
+} 
 const User=  mongoose.model('User',userSchema);
 
 module.exports = User;

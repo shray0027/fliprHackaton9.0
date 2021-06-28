@@ -72,8 +72,9 @@ const Create = ()=>{
             window.alert("Invalid details")
         } else {
             window.alert("successfull created");
-            history.push("/running");
+            
         }
+        history.push("/running");
 }
   useEffect(()=>{
     callCreatePage();
