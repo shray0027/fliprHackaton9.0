@@ -133,9 +133,9 @@ userSchema.methods.update = async function(){
 }
 userSchema.methods.removeRunning = async function(){
     try {
-        console.log(this.currentRequest);
-        this.currentRequest=this.currentRequest.pop();
-        console.log(this.currentRequest);
+        console.log(this.currentRequest,"now");
+        this.currentRequest=[];
+        console.log(this.currentRequest,"after");
     }catch(err){
         console.log(err);
     }

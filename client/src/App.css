@@ -240,7 +240,9 @@ td{
 .link:hover{
 color: white;
 }
-
+.hidden{
+  display: none;
+}
 @media (max-width : 1000px){
   .upper,.outer,.outerL{
    min-height: 120vh;

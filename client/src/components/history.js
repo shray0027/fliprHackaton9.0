@@ -24,10 +24,10 @@ const History = () => {
       <table className="w-75 my-4 mx-auto">
         <tbody>
         <tr>
-          <td>#</td>
-          <td>To</td>
-          <td className="text-center w-100">Subject</td>
-          <td className="text-end w-100">Time</td>
+        <td>#</td>
+        <td>To</td>
+        <td colSpan="3">Subject</td>
+        <td>Timestamp</td>
         </tr>
           {mails.map((data, index) => (
             <tr className="w-100" key={index}>

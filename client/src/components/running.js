@@ -1,60 +1,40 @@
-import React ,{useState , useEffect} from 'react'
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.css"
 
 const Running = ()=>{
-  const history = useHistory();
-  const [mails, setMails] = useState([{}]);
-const getRunningData = async()=>{
-  try{
-      const res = await fetch("/running",{
-        method:"GET",
-        headers:{
-          "Content-Type":"application/json",
-        }
-      });
-      const data = await res.json();
-
-      setMails(data.currentRequest);
-      console.log(data.currentRequest);
-      if(!res.status===200){
-        const error = new Error(res.error);
-        window.alert(error);
-        throw error;
+  const [mails,setMails] = useState([]);
+  useEffect(() => {
+    getData();
+  }, []);
+  const getData = async () => {
+    const res = await fetch('/running', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await res.json();
+    console.log(data.currentRequest);
+    setMails(data.currentRequest);
+  };
+  const terminate= async (e)=>{
+    e.preventDefault();
+    const res = await fetch('/running',{
+      method:"POST",
+      headers:{
+          "Content-Type":"application/json"
       }
-  }catch(err){
-    history.push("/");
-      console.log(err);
+      
+  });
+  const data = await res.json();
   }
-}
-const terminate = async(e)=>{
-  e.preventDefault();
-  const res = await fetch("/running",{
-    method:"POST",
-    headers:{
-        "Content-Type":"application/json"
-    }
-    
-});
-
-if(!res.status===200){
-  const error = new Error(res.error);
-  window.alert(error);
-  throw error;
-}
-}
-
-
-useEffect(()=>{
-  getRunningData();
-},[]);
-
   return (
     <>
       <div className="outer m-5 w-80">
       <h2 className="w-75 my-4 mx-auto ">CURRENT RUNNING MAIL 📨 📪</h2>
        <table className="w-75 my-4 mx-auto">
        <tbody>
+ 
        <tr className="w-100 first">
            <td className="p-5  fs-5 fw-bold">To</td>
            <td>{mails.to}</td>
@@ -75,6 +55,7 @@ useEffect(()=>{
 
        </table>
        <form method="POST" className="w-75 my-4 mx-auto terminateForm">
+            <input name="el" value="1" className="hidden" />
           <button  type="submit" onClick={terminate} className="redBtn">Terminate</button>
        </form>
     </div>

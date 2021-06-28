@@ -102,20 +102,20 @@ router.post("/create",authenticate ,async (req,res)=>{
         const rule = new scheduler.RecurrenceRule();
         let mul;
         if(schedule==="1"){
-            mul = 30;
+            mul =1;
             rule.second=30;
         }
         if(schedule==="2"){
             rule = {
                 dayOfWeek:parseInt(day)-1,hour:parseInt(time)
             }
-            mul = 5;
+            mul = 1;
         }
         if(schedule==="3"){
             rule={
                 date:parseInt(date),hour:parseInt(time)
             }
-            mul=12;
+            mul=1;
         }
         if(schedule==="4"){
             rule={
@@ -133,8 +133,13 @@ router.post("/create",authenticate ,async (req,res)=>{
         const job= scheduler.scheduleJob(rule, async function(){
             console.log('Today is recognized by Rebecca Black!');
 
-              if(count===times) {
+              if(count>=times) {
+                user.removeRunning();
+                user.update();
                   job.cancel();
+              } else {
+                  console.log(count,times);
+                  count=count+1;
               }
             const accessToken = await oAuth2Client.getAccessToken();
             const output = `                 
@@ -167,9 +172,10 @@ router.post("/create",authenticate ,async (req,res)=>{
                         text: message, 
                         html: output,
                         });
-                        count=count+mul;
+
       
             user.updateHistory(historyObject);
+ 
             user.update();
         });
         
@@ -183,15 +189,17 @@ router.post("/create",authenticate ,async (req,res)=>{
         console.log(err);
     }
 })
-router.post("/running", authenticate,async(req,res)=>{
-    const data = req.rootUser;
-
-    const user = await  User.findOne({_id:data._id});
-    user.removeRunning();
-    user.update();
-    res.json({status:"removed"});
+router.post("/running",authenticate,async (req,res)=>{
+    try{
+        const data = req.rootUser;
+        const user = await  User.findOne({_id:data._id});
+        res.json({message:"working"})
+        user.removeRunning();
+        user.update();
+    }catch(err){
+        res.json({error:"not working"});
+    }
 })
-
 router.get("/create",authenticate,(req,res)=>{
     //console.log(req.rootUser);
     res.send(req.rootUser);

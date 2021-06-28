@@ -91,21 +91,21 @@ const Create = ()=>{
                               <div className="col-lg-6  col-md-12">
                                 
                                   <div className="mb-3">
-                                        <label for="exampleFormControlInput1" className="form-label">To :</label>
+                                        <label className="form-label">To :</label>
                                         <input type="email" required name="to"  className="form-control" id="exampleFormControlInput1" 
                                           value={user.to}
                                           onChange={handleInputs}
                                         placeholder="name@example.com" />
                                   </div>
                                   <div className="mb-3">
-                                        <label for="exampleFormControlTextarea2" className="form-label">Subject :</label>
+                                        <label  className="form-label">Subject :</label>
                                         <input type="text" required name="subject" className="form-control" 
                                           value={user.subject}
                                           onChange={handleInputs}
                                         id="exampleFormControlTextarea2" />
                                   </div>
                                   <div className="mb-3">
-                                              <label for="exampleFormControlTextarea1" className="form-label">Text :</label>
+                                              <label className="form-label">Text :</label>
                                               <textarea required name="message" className="form-control textarea" id="exampleFormControlTextarea1"
                                                 value={user.message}
                                                 onChange={handleInputs}
@@ -114,7 +114,7 @@ const Create = ()=>{
                                 </div>
                       <div className="col-lg-6 col-md-12">
                               <div className="row ">
-                              <label for="exampleFormControlTextarea1" className="form-label">Schedule :</label>
+                              <label className="form-label">Schedule :</label>
                               <select className="form-select" required
                                 value={user.schedule}
                                 onChange={handleInputs}
@@ -128,14 +128,14 @@ const Create = ()=>{
                               </div>
                                     <div className="row my-4" >
                                     <div className="col-6">
-                                    <label for="exampleFormControlTextarea1" className="form-label">No. of time you want to send :</label>
+                                    <label className="form-label">No. of time you want to send :</label>
                                     <input type="number" required name="times" className="form-control" placeholder="Example : 1" required
                                           value={user.times}
                                           onChange={handleInputs}
                                         id="exampleFormControlTextarea2" />
                                     </div>
                                    <div className="col-6">
-                                   <label for="exampleFormControlTextarea1" className="form-label">Day :</label>
+                                   <label  className="form-label">Day :</label>
                                     <select name="day"
                                       value={user.day}
                                       onChange={handleInputs}
@@ -152,7 +152,7 @@ const Create = ()=>{
                                    </div>
                                     </div>
                                     <div className="row my-2">
-                                    <label for="exampleFormControlTextarea1" className="form-label">Date :</label>
+                                    <label  className="form-label">Date :</label>
                                     <select name="date"
                                       value={user.date}
                                       onChange={handleInputs}
@@ -192,7 +192,7 @@ const Create = ()=>{
                                     </select>    
                                     </div>
                                     <div className="row my-2" >
-                                    <label for="exampleFormControlTextarea1" className="form-label">Month :</label>
+                                    <label  className="form-label">Month :</label>
                                     <select name="month" value={user.month} onChange={handleInputs} className="form-select">
                                     <option value="00">Select the month</option>
                                         <option value="01">January</option>
@@ -210,7 +210,7 @@ const Create = ()=>{
                                     </select> 
                                     </div>
                                     <div className="row my-2">
-                                    <label for="exampleFormControlTextarea1" className="form-label">Time :</label>
+                                    <label className="form-label">Time :</label>
                                     <select name="time"
                                       value={user.time}
                                       onChange={handleInputs}

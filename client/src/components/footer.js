@@ -19,13 +19,13 @@ const Footer = ()=>{
 
 
     <div>
-      <NavLink  to="" className="me-4 text-reset">
+      <NavLink  to="mailto:shrayanand000@gmail.com" className="me-4 text-reset">
       <i className="far fa-envelope"></i>
       </NavLink >
-      <NavLink  to="" className="me-4 text-reset">
+      <NavLink  to="https://www.linkedin.com/in/shray-anand-8325ab1a3/" className="me-4 text-reset">
         <i className="fab fa-linkedin"></i>
       </NavLink >
-      <NavLink  to="" className="me-4 text-reset">
+      <NavLink  to="https://github.com/shray0027" className="me-4 text-reset">
         <i className="fab fa-github"></i>
       </NavLink >
     </div>

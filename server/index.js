@@ -14,7 +14,7 @@ app.use(require('./router/routes'));
 app.use(require('./router/create'));
 
 
-let port = process.env.PORT || 4000;
+let port = process.env.PORT || 6000;
 app.listen(port,()=>{
     console.log(`server launched on port ${port}`);
 });
